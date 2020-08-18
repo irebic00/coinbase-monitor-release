@@ -19,8 +19,8 @@ All above tools need to be installed in your environment
 ### Deployment
 Follow these steps:
 - In directory ./coinbase-monitor: mvn install
-- In directory ./coinbase-monitor/build: ./build-script -bv --package-helm-chart
 - Run from terminal: eval $(minikube docker-env)
+- In directory ./coinbase-monitor/build: ./build-script -bv --package-helm-chart
 - Continue using this terminal
 - Deploy application: helm install test-release ./coinbase-monitor/charts/coinbase-monitor/<generated_chart_from_build_script> --create-namespace
 - Deploy istio and corresponding ingress gatewy in directory ./istio-ingressgw: ./deploy_istio.sh
