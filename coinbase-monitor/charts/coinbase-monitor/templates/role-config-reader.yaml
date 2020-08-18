@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "coinbase-monitor.name" . }}
+  labels:
+    {{- include "coinbase-monitor.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "coinbase-monitor.product-info" . | indent 4 }}
+rules:
+  - apiGroups:
+      - ""
+      - apps
+    resources:
+      - pods
+      - services
+      - endpoints
+      - configmaps
+      - secrets
+      - statefulsets
+    verbs:
+      - get
+      - watch
+      - list

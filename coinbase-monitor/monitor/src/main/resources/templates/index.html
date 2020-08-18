@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Coinbase Monitor</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/main.js"></script>
+</head>
+
+<body>
+
+<noscript>
+    <h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable Javascript and reload this page!</h2>
+</noscript>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Coinbase Monitor</h1>
+        <p class="lead">This is a simple monitor for cryptocurrencies that follows tickers from Coinbase. Next roadmap milestone is introduction of advanced signals and alert algorithms to track price movements.</p>
+    </div>
+</div>
+
+<div id="main-content" class="container">
+    <div class="bd-example bd-example-tabs">
+        <ul class="nav nav-tabs" id="settings-tab" role="tablist" style="margin-bottom: 1rem;">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="connection-tab" data-toggle="tab" href="#connection" role="tab" aria-controls="connection" aria-selected="true">Connect</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="refresh-tab" data-toggle="tab" href="#refresh" role="tab" aria-controls="refresh" aria-selected="false">Refresh</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="ticker-tab" data-toggle="tab" href="#ticker" role="tab" aria-controls="ticker" aria-selected="false">Ticker</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="settings-tab-content">
+            <div class="tab-pane fade active show" id="connection" role="tabpanel" aria-labelledby="connection-tab" style="height: 128px;">
+                <p>Here you can establish connection to Coinbase.</p>
+                <button id="connect" type="button" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" title="Connect to Coinbase">
+                    Connect
+                </button>
+                <button id="disconnect" type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom" title="Disconnect from Coinbase">
+                    Disconnect
+                </button>
+            </div>
+
+            <div class="tab-pane fade" id="refresh" role="tabpanel" aria-labelledby="refresh-tab" style="height: 128px;">
+                <p>Select refresh interval here for your ticker.</p>
+                <div class="form-group">
+                    <label for="refresh-interval-select">Refresh interval in seconds:</label>
+                    <select class="form-control" id="refresh-interval-select">
+                        <option>1</option>
+                        <option>5</option>
+                        <option>10</option>
+                        <option>15</option>
+                        <option>30</option>
+                        <option>45</option>
+                        <option>60</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="ticker" role="tabpanel" aria-labelledby="ticker-tab" style="height: 128px;">
+                <p>Select one of the tickers to follow.</p>
+                <div class="form-group">
+                    <label for="ticker-select">Selected ticker:</label>
+                    <select class="form-control" id="ticker-select">
+                        <option>BTC-EUR</option>
+                        <option>BTC-USD</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <table id="ticker-table" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Middle market price</th>
+                        <th>Timestamp</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="fixed-bottom">
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item">Connection:
+            <span class="badge badge-danger" id="connection-status">Disconnected</span>
+        </li>
+        <li class="list-group-item">Refresh:
+            <span class="badge badge-info" id="refresh-interval">10s</span>
+        </li>
+        <li class="list-group-item">Ticker:
+            <span class="badge badge-info" id="ticker-selected">BTC-EUR</span>
+        </li>
+    </ul>
+</div>
+</body>
+
+</html>

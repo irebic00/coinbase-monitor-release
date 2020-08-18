@@ -1,0 +1,5 @@
+{{- define "coinbase-monitor.helm-labels" }}
+app.kubernetes.io/name: {{ template "coinbase-monitor.name" . }}
+app.kubernetes.io/version: {{ template "coinbase-monitor.version" . }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- end}}

@@ -1,0 +1,4 @@
+{{- define "coinbase-monitor.product-info" }}
+coinbase-monitor/product-name: "coinbase-monitor"
+coinbase-monitor/product-revision: "REV1.0"
+{{- end}}

@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Coinbase Monitor microservice
+name: coinbase-monitor
+version: %SERVICE_VERSION%

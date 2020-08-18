@@ -1,0 +1,54 @@
+global:
+  imageCredentials:
+    pullPolicy: Never
+  registry:
+    url: null
+    pullSecret: null
+  istio:
+    sidecar:
+      inject: true
+  timezone: "UTC"
+
+replicaCount: 1
+images:
+  coinbaseMonitor:
+    name: coinbase-monitor
+    tag: %SERVICE_VERSION%
+
+service:
+  type: ClusterIP
+  internalPort: 8080
+
+imageCredentials:
+  repoPath: proj-coinbase
+  pullPolicy: Never
+  registry:
+    url: localhost:5000
+    pullSecret: null
+
+jvm:
+  startheapmemory: 256m
+  maxheapmemory: 1024m
+
+app:
+  logging: INFO
+  spring:
+    logging: INFO
+  internal:
+    livenessTimeoutSeconds: 30
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2048Mi
+  requests:
+    cpu: 500m
+    memory: 768Mi
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 0
+
+nameOverride:
