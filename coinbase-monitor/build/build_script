@@ -24,7 +24,7 @@ function check_result() {
 #   REPOSITORY_ROOT_DIR global variable with current repository name
 #####################################################
 function set_repo_root_dir() {
-    REPOSITORY_ROOT_DIR=$(git rev-parse --show-toplevel)
+    REPOSITORY_ROOT_DIR=$(git rev-parse --show-toplevel)/coinbase-monitor
     check_result $? "Failed to find repository root directory!"
 
     echo "[INFO] Repository root dir is ${REPOSITORY_ROOT_DIR}"
