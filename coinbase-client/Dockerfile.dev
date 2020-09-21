@@ -10,7 +10,7 @@ ENV VERSION_ENV=${VERSION}
 RUN groupadd -r func_user && useradd -r -s /bin/false -g func_user func_user
 WORKDIR /usr/src/app/
 
-COPY target/coinbase-monitor-${VERSION}.jar /usr/src/app
+COPY monitor/target/monitor-${VERSION}.jar /usr/src/app
 
 USER func_user
-CMD ["sh", "-c", "java ${JAVA_OPTS} -jar coinbase-monitor-${VERSION_ENV}.jar"]
+CMD ["sh", "-c", "java ${JAVA_OPTS} -jar monitor-${VERSION_ENV}.jar"]

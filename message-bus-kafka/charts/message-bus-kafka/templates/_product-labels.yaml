@@ -1,0 +1,5 @@
+{{- define "message-bus-kafka.helm-labels" }}
+app.kubernetes.io/name: {{ template "message-bus-kafka.name" . }}
+app.kubernetes.io/version: {{ template "message-bus-kafka.version" . }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- end}}

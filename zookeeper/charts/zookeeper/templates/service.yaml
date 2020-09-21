@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.services.zookeeper.hostname }}
+  labels:
+    {{- include "zookeeper.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "zookeeper.product-info" . | indent 4 }}
+spec:
+  ports:
+  - name: client
+    port: {{ .Values.global.services.zookeeper.port }}
+    protocol: TCP
+  - name: follower
+    port: 2888
+    protocol: TCP
+  - name: leader
+    port: 3888
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ template "zookeeper.name" . }}

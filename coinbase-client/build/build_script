@@ -1,0 +1,172 @@
+#!/bin/bash
+JAVA_BUILDER_IMG=library/maven:latest
+BINARY_PATH="/usr/src/app/target"
+MOUNT_HOST_VOLUME=0
+BUILD_MICROSERVICE_IMAGES=0
+PACKAGE_HELM_CHART=0
+USE_PRODUCTION_TAGS=0
+
+#####################################################
+# Checks the result of the command provided as $1 argument.
+# Exits if return code of the command is not zero/0
+#####################################################
+function check_result() {
+    if [ $1 -ne 0 ]
+    then
+      echo "[ERROR] $2"
+      exit 1
+    fi
+}
+
+#####################################################
+# Sets the root repository directory.
+# Returns:
+#   REPOSITORY_ROOT_DIR global variable with current repository name
+#####################################################
+function set_repo_root_dir() {
+    REPOSITORY_ROOT_DIR=$(git rev-parse --show-toplevel)/coinbase-client
+    check_result $? "Failed to find repository root directory!"
+
+    echo "[INFO] Repository root dir is ${REPOSITORY_ROOT_DIR}"
+}
+
+#####################################################
+# Checks the result of the command provided as $1 argument.
+# Exits if return code of the command is not zero/0
+#####################################################
+function get_common_build_lib() {
+    set_repo_root_dir
+    source ${REPOSITORY_ROOT_DIR}/build/common_build_lib.sh
+}
+
+#####################################################
+# Sets microservice image name.
+# Returns:
+#   MICROSERVICE_IMAGE global variable containing the constructed microservice name.
+#####################################################
+function set_microservice_specific_variables() {
+    MICROSERVICE_IMAGE=${LOCAL_DOCKER_REGISTRY}/${MICROSERVICE_NAME}:${MICROSERVICE_TAG}
+    echo "[INFO] Microservice image tag is ${MICROSERVICE_TAG}"
+}
+
+#####################################################
+# Builds development docker image by using JAVA_BUILDER_IMG to execute maven build.
+# Dockerbuild is preformed using Dockerfile.dev file.
+# Returns:
+#   Docker image MICROSERVICE_IMAGE
+#####################################################
+function build_development_image() {
+  echo "[INFO] Building microservice binary"
+  echo "[INFO] Mounting host .m2/ directory and repo directory"
+  docker pull ${JAVA_BUILDER_IMG}
+  check_result $? "Failed to pull ${JAVA_BUILDER_IMG}"
+
+  # Docker issues with "eval (minikube docker-env)", cannot mount host directory, why???
+  # docker run --rm -v ${HOME}/.m2:/root/.m2 -v ${REPOSITORY_ROOT_DIR}:/usr/src/app -w /usr/src/app ${JAVA_BUILDER_IMG} \
+  #      mvn --batch-mode clean dependency:copy-dependencies package
+  # mvn --batch-mode clean dependency:copy-dependencies package
+
+  check_result $? "Failed building development image"
+
+  docker build --pull \
+               -t ${MICROSERVICE_IMAGE} \
+               -f ${REPOSITORY_ROOT_DIR}/Dockerfile.dev \
+               --build-arg VERSION=development \
+               ${REPOSITORY_ROOT_DIR}
+  check_result $? "Failed building development image"
+}
+
+#####################################################
+# Builds production docker image.
+# Dockerbuild is preformed using Dockerfile file.
+# TODO: Returns:
+#   Docker image MICROSERVICE_IMAGE
+#####################################################
+function build_production_image() {
+    echo "[WARN] Not implemented"
+    exit 0
+}
+
+#####################################################
+# Builds microservice docker image (development or production).
+# Dockerbuild is preformed using Dockerfile file.
+# Note:
+#   Differentiates between development and production based on if
+#   MOUNT_HOST_VOLUME flag (-v) is passed or not.
+#####################################################
+function build_microservice_docker_image() {
+    if [ $MOUNT_HOST_VOLUME -eq 1 ]; then
+      build_development_image
+    else
+      build_production_image
+    fi
+}
+
+#####################################################
+# Builds helm chart
+#####################################################
+function package_microservice_chart() {
+  echo "Not implemented"
+}
+
+#####################################################
+# Prints usage (help) information.
+#####################################################
+function usage() {
+    cat <<EOF
+     Usage:
+     $(basename $0) [options]
+     Script in charge of building the microservice.
+
+     Options:
+       -b, --build:                   Build the microservice container image.
+       -v, --mount-host-volume        Mounts maven host repository in the cointainer to use cached artifacts.
+                                      Mounts as well host source code directory in the container.
+                                      When false source code is copied to generate an image and compile the binary
+       --package-helm-chart           Packages microservice helm chart
+EOF
+}
+
+function parse_arguments() {
+  PARSED_OPTIONS=$(getopt -n "$0" -o hbvl -l help,build,mount-host-volume,package-helm-chart -- "$@")
+  OPTION_RET=$?
+  eval set -- "$PARSED_OPTIONS"
+  if [ $OPTION_RET -ne 0 ]
+  then
+    usage
+    exit 1
+  fi
+
+  while [ $# -ge 1 ]; do
+    case $1 in
+      -b | --build ) BUILD_MICROSERVICE_IMAGES=1;;
+      -v | --mount-host-volume ) MOUNT_HOST_VOLUME=1;;
+      --package-helm-chart ) PACKAGE_HELM_CHART=1;;
+      -h | --help ) usage;exit 0;;
+      -- ) shift;break;;
+      * ) "Unsupported parameter $1";exit 2;;
+    esac
+    shift
+  done
+}
+
+function main() {
+    get_common_build_lib
+
+    parse_arguments $@
+
+    set_default_microservice_variables
+
+    set_microservice_specific_variables
+
+    if [ ${BUILD_MICROSERVICE_IMAGES} -eq 1 ]; then
+      dockerfile_linter
+      build_microservice_docker_image
+    fi
+
+    if [ ${PACKAGE_HELM_CHART} -eq 1 ]; then
+      package_microservice_chart
+    fi
+}
+
+main $@

@@ -1,0 +1,25 @@
+# hadolint ignore=DL3007
+FROM alpine:latest
+
+WORKDIR /tmp
+
+# hadolint ignore=DL3018
+RUN apk --no-cache add curl sudo tar
+
+RUN curl -sLo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.2/bin/linux/amd64/kubectl && mv kubectl /usr/bin
+RUN chmod +x /usr/bin/kubectl
+
+RUN curl -sLo istio.tar.gz https://github.com/istio/istio/releases/download/1.6.8/istio-1.6.8-linux-amd64.tar.gz
+WORKDIR /tmp
+RUN tar xzvf istio.tar.gz
+RUN cp ./istio-1.6.8/bin/istioctl /usr/bin && rm -rf ./istio*
+
+WORKDIR /usr/src/app
+
+COPY bin/deploy_istio.sh ./
+COPY bin/generate.sh ./
+
+RUN chmod +x /usr/src/app/deploy_istio.sh
+RUN chmod +x /usr/src/app/generate.sh
+
+ENTRYPOINT ["/usr/src/app/deploy_istio.sh"]

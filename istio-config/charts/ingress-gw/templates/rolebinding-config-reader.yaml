@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "istio-config.name" . }}-config-reader
+  labels:
+    {{- include "istio-config.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "istio-config.product-info" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "istio-config.name" . }}-config-reader
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "istio-config.name" . }}
+    namespace: {{ .Release.namespace }}

@@ -16,10 +16,10 @@
 
 # Generated files
 .idea/**/contentModel.xml
-istio-ingressgw/certificate-generator/1_root/
-istio-ingressgw/certificate-generator/2_intermediate
-istio-ingressgw/certificate-generator/3_application
-istio-ingressgw/certificate-generator/4_client
+istio-config/certificate-generator/1_root/
+istio-config/certificate-generator/2_intermediate
+istio-config/certificate-generator/3_application
+istio-config/certificate-generator/4_client
 *.tgz
 
 # Sensitive or high-churn files

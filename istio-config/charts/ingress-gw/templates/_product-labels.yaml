@@ -1,0 +1,5 @@
+{{- define "istio-config.helm-labels" }}
+app.kubernetes.io/name: {{ template "istio-config.name" . }}
+app.kubernetes.io/version: {{ template "istio-config.version" . }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- end}}

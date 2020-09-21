@@ -16,15 +16,7 @@ global:
       hostname: zookeeper
       port: 2181
 
-replicaCount: 1
-images:
-  coinbaseMonitor:
-    name: coinbase-monitor
-    tag: %SERVICE_VERSION%
-
-service:
-  type: ClusterIP
-  internalPort: 8080
+replicaCount: 2
 
 imageCredentials:
   repoPath: proj-coinbase
@@ -33,31 +25,12 @@ imageCredentials:
     url: localhost:5000
     pullSecret: null
 
-jvm:
-  startheapmemory: 256m
-  maxheapmemory: 1024m
-
-app:
-  logging: INFO
-  spring:
-    logging: INFO
-  internal:
-    livenessTimeoutSeconds: 30
-
 resources:
   limits:
     cpu: 1000m
-    memory: 2048Mi
+    memory: 512Mi
   requests:
     cpu: 500m
-    memory: 768Mi
-
-updateStrategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxUnavailable: 1
-    maxSurge: 0
-
-coinbaseSocket: wss://ws-feed.pro.coinbase.com
+    memory: 128Mi
 
 nameOverride:

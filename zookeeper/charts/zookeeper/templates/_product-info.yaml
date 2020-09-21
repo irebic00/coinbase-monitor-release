@@ -1,0 +1,4 @@
+{{- define "zookeeper.product-info" }}
+zookeeper/product-name: "zookeeper"
+zookeeper/product-revision: "REV1.0"
+{{- end}}

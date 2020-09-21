@@ -8,18 +8,11 @@ global:
     sidecar:
       inject: true
   timezone: "UTC"
-  services:
-    kafka:
-      hostname: message-bus-kafka
-      port: 9092
-    zookeeper:
-      hostname: zookeeper
-      port: 2181
 
 replicaCount: 1
 images:
   coinbaseMonitor:
-    name: coinbase-monitor
+    name: coinbase-client
     tag: %SERVICE_VERSION%
 
 service:
@@ -57,7 +50,5 @@ updateStrategy:
   rollingUpdate:
     maxUnavailable: 1
     maxSurge: 0
-
-coinbaseSocket: wss://ws-feed.pro.coinbase.com
 
 nameOverride:

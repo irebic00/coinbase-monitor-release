@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Istio ingress gateway
+name: istio-config
+version: %SERVICE_VERSION%

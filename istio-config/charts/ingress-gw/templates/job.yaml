@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "istio-config.name" . }}
+  labels:
+    app: {{ template "istio-config.name" . }}
+    release: {{ .Release.Name }}
+    {{- include "istio-config.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "istio-config.product-info" . | indent 4 }}
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: {{ quote .Values.global.istio.sidecar.inject }}
+        {{- include "istio-config.product-info" . | indent 8 }}
+      labels:
+        {{- include "istio-config.helm-labels" . | indent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ template "istio-config.name" . }}
+      containers:
+        - name: {{ template "istio-config.name" . }}
+          image: "{{ default .Values.global.registry.url .Values.imageCredentials.registry.url }}/{{ .Values.imageCredentials.repoPath }}/{{ .Values.images.ingressGw.name }}:{{ .Values.images.ingressGw.tag }}"
+          env:
+            - name: CONTAINER_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SERVICE_NAME
+              value: {{ include "istio-config.name" . }}
+            - name: KUBERNETES_SERVICE_HOST
+              value: kubernetes.default.svc
+            - name: TZ
+              value: {{ .Values.global.timezone }}
+            - name: ISTIO_NAMESPACE
+              value: {{ .Values.istio.istioSystemNamespace }}
+          imagePullPolicy: {{ default .Values.global.imageCredentials.pullPolicy .Values.imageCredentials.pullPolicy | quote }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

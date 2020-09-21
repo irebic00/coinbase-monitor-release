@@ -1,0 +1,4 @@
+{{- define "istio-config.product-info" }}
+istio-config/product-name: "istio-config"
+istio-config/product-revision: "REV1.0"
+{{- end}}

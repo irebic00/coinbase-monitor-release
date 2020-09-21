@@ -1,0 +1,5 @@
+{{- define "zookeeper.helm-labels" }}
+app.kubernetes.io/name: {{ template "zookeeper.name" . }}
+app.kubernetes.io/version: {{ template "zookeeper.version" . }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- end}}

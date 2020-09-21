@@ -1,0 +1,35 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ template "zookeeper.name" . }}
+  labels:
+    app: {{ template "zookeeper.name" . }}
+    release: {{ .Release.Name }}
+    {{- include "zookeeper.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "zookeeper.product-info" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "zookeeper.name" . }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: {{ quote .Values.global.istio.sidecar.inject }}
+        {{- include "zookeeper.product-info" . | indent 8 }}
+      labels:
+        {{- include "zookeeper.helm-labels" . | indent 8 }}
+    spec:
+      containers:
+        - name: {{ template "zookeeper.name" . }}
+          image: bitnami/zookeeper
+          ports:
+            - containerPort: 2181
+          env:
+            - name: ZOOKEEPER_ID
+              value: "1"
+            - name: ZOOKEEPER_SERVER_1
+              value: {{ .Values.global.services.zookeeper.hostname }}
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "coinbase-client.name" . }}
+  labels:
+    {{- include "coinbase-client.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "coinbase-client.product-info" . | indent 4 }}
+data:
+  application.yaml: |-
+    spring:
+      banner-mode: "off"
+    server:
+      port : {{ .Values.service.internalPort }}
+    management:
+      health:
+        livenessstate:
+          enabled: true
+        readinessstate:
+          enabled: true
+      endpoint:
+        health:
+          probes:
+            enabled: true
+  jvm.java_opts: "-Xmx{{ .Values.jvm.maxheapmemory }} -Xms{{ .Values.jvm.startheapmemory }} -Dlogging.config=/etc/config/log4j.xml"
+  log4j.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="{{ .Values.app.logging}}">
+      <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+          <PatternLayout pattern="{ &quot;timestamp&quot;: &quot;%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}&quot;, &quot;severity&quot;: &quot;%level{lowerCase=true, WARN=warning, TRACE=debug, FATAL=critical}&quot;, &quot;message&quot;: &quot;%enc{%msg}{JSON}&quot;, &quot;service_id&quot;: &quot;{{ template "coinbase-client.name" . }}&quot;, &quot;version&quot;: &quot;0.3.0&quot; }%n"/>
+        </Console>
+      </Appenders>
+      <Loggers>
+        <Root level="{{ .Values.app.spring.logging }}">
+          <AppenderRef ref="Console"/>
+        </Root>
+      </Loggers>
+    </Configuration>

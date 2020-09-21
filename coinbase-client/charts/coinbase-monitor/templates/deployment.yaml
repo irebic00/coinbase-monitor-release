@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "coinbase-client.name" . }}
+  labels:
+    app: {{ template "coinbase-client.name" . }}
+    release: {{ .Release.Name }}
+    {{- include "coinbase-client.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "coinbase-client.product-info" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.updateStrategy.type }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+  minReadySeconds: 0
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "coinbase-client.name" . }}
+
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: {{ quote .Values.global.istio.sidecar.inject }}
+        {{- include "coinbase-client.product-info" . | indent 8 }}
+      labels:
+        {{- include "coinbase-client.helm-labels" . | indent 8 }}
+    spec:
+      serviceAccountName: {{ template "coinbase-client.name" . }}
+      tolerations:
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 5
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 5
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{ template "coinbase-client.name" . }}
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: {{ template "coinbase-client.name" . }}
+          image: "{{ default .Values.global.registry.url .Values.imageCredentials.registry.url }}/{{ .Values.imageCredentials.repoPath }}/{{ .Values.images.coinbaseMonitor.name }}:{{ .Values.images.coinbaseMonitor.tag }}"
+          env:
+            - name: CONTAINER_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JAVA_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "coinbase-client.name" . }}
+                  key: jvm.java_opts
+            - name: SERVICE_NAME
+              value: {{ include "coinbase-client.name" . }}
+            - name: KUBERNETES_SERVICE_HOST
+              value: kubernetes.default.svc
+            - name: TZ
+              value: {{ .Values.global.timezone }}
+          imagePullPolicy: {{ default .Values.global.imageCredentials.pullPolicy .Values.imageCredentials.pullPolicy | quote }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 10
+            periodSeconds: {{ .Values.app.internal.livenessTimeoutSeconds }}
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: {{ template "coinbase-client.name" . }}-cm-volume
+              mountPath: /etc/config
+      volumes:
+        - name: {{ template "coinbase-client.name" . }}-cm-volume
+          configMap:
+            name: {{ template "coinbase-client.name" . }}

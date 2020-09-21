@@ -1,0 +1,36 @@
+global:
+  imageCredentials:
+    pullPolicy: Never
+  registry:
+    url: null
+    pullSecret: null
+  istio:
+    sidecar:
+      inject: true
+  timezone: "UTC"
+
+replicaCount: 1
+images:
+  ingressGw:
+    name: istio-config
+    tag: %SERVICE_VERSION%
+
+imageCredentials:
+  repoPath: proj-coinbase
+  pullPolicy: Never
+  registry:
+    url: localhost:5000
+    pullSecret: null
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+istio:
+  istioSystemNamespace: istio-system
+
+nameOverride:
