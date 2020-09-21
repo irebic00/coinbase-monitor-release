@@ -16,7 +16,7 @@ global:
       hostname: zookeeper
       port: 2181
 
-replicaCount: 2
+replicaCount: 1
 
 imageCredentials:
   repoPath: proj-coinbase

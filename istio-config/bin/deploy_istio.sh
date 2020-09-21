@@ -61,20 +61,20 @@ spec:
   - match:
       - uri:
           prefix: /
+      - uri:
+          exact: /websocket/coinbase
     retries:
       attempts: 0
     route:
     - destination:
         port:
           number: 8080
-        host: coinbase-monitor.default.svc.cluster.local
+        host: coinbase-client.default.svc.cluster.local
   - match:
       - uri:
           regex: ^/subscription/[A-Fa-f0-9]{64}$
       - uri:
           exact: /subscription
-      - uri:
-          exact: /websocket/coinbase
     retries:
       attempts: 0
     route:
