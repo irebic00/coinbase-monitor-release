@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.global.services.mongo.hostname }}
+  labels:
+    {{- include "mongo.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "mongo.product-info" . | indent 4 }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ template "mongo.name" . }}
+  ports:
+    - port: 27017
+      name: mongo-client
+      protocol: TCP

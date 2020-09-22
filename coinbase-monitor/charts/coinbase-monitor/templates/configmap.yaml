@@ -10,6 +10,13 @@ data:
   application.yaml: |-
     spring:
       banner-mode: "off"
+      jpa:
+        show-sql: true
+      data:
+        mongodb:
+          database: {{ .Values.mongo.databaseName }}
+          host: {{ .Values.global.services.mongo.hostname }}
+          port: {{ .Values.global.services.mongo.port }}
     server:
       port : {{ .Values.service.internalPort }}
     management:

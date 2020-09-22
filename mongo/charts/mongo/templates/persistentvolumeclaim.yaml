@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "mongo.name" . }}
+  labels:
+    app: {{ template "mongo.name" . }}
+    release: {{ .Release.Name }}
+    {{- include "mongo.helm-labels" . | indent 4 }}
+  annotations:
+    {{- include "mongo.product-info" . | indent 4 }}
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

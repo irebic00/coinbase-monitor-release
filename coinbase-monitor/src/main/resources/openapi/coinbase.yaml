@@ -14,6 +14,8 @@ components:
         - product_ids
         - channels
       properties:
+        uuid:
+          type: string
         type:
           $ref: "#/components/local/SubscriptionType"
           example: "subscribe"

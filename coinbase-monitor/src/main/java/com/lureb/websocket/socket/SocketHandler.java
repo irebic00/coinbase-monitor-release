@@ -1,15 +1,13 @@
-package com.lureb.websocket.publisher;
+package com.lureb.websocket.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lureb.monitor.coinbase.model.Subscription;
 import com.lureb.monitor.coinbase.model.TickerChannel;
 import com.lureb.websocket.driver.WebSocketDriver;
-import com.lureb.websocket.publisher.configurations.SocketConfiguration;
-import com.lureb.websocket.publisher.configurations.SubscriptionResponse;
-import com.lureb.websocket.publisher.configurations.WsSourceUri;
+import com.lureb.websocket.kafka.publisher.KafkaPublisher;
+import com.lureb.websocket.socket.configurations.WsSourceUri;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -22,15 +20,15 @@ import java.io.IOException;
 public class SocketHandler implements WebSocketHandler {
 
   private final WsSourceUri wsSourceUri;
-  private final KafkaTemplate<String, TickerChannel> kafkaTemplate;
+  private final KafkaPublisher kafkaPublisher;
   private final ObjectMapper mapper;
   private final WebSocketDriver webSocketDriver;
 
   private final Logger LOGGER = LogManager.getLogger(WebSocketHandler.class);
 
-  public SocketHandler(WsSourceUri wsSourceUri, KafkaTemplate<String, TickerChannel> kafkaTemplate) {
+  public SocketHandler(WsSourceUri wsSourceUri, KafkaPublisher kafkaPublisher) {
     this.wsSourceUri = wsSourceUri;
-    this.kafkaTemplate = kafkaTemplate;
+    this.kafkaPublisher = kafkaPublisher;
     this.mapper = new ObjectMapper();
     webSocketDriver = new WebSocketDriver(wsSourceUri.getSourceUri());
   }
@@ -41,12 +39,8 @@ public class SocketHandler implements WebSocketHandler {
         .receive()
         .map(WebSocketMessage::getPayloadAsText)
         .map(this::toTickerChannel)
-        .doOnNext(this::send)
+        .doOnNext(kafkaPublisher::send)
         .then();
-  }
-
-  private void send(TickerChannel event) {
-    kafkaTemplate.send("coinbase", event);
   }
 
   private TickerChannel toTickerChannel(String json) {
@@ -58,26 +52,13 @@ public class SocketHandler implements WebSocketHandler {
     }
   }
 
-  public SubscriptionResponse subscribe(Subscription subscription) {
-    LOGGER.info("Subscribing publisher source to {}", wsSourceUri.getSourceUri());
-    SubscriptionResponse subscriptionResponse =
-            SocketConfiguration.getInstance().createSubscription(subscription);
-    if (!subscriptionResponse.getStatus().equals(SubscriptionResponse.Status.CREATED)) {
-      return subscriptionResponse;
-    }
-
-    webSocketDriver.connectToWebSocket(subscription, kafkaTemplate, "coinbase");
-
-    return subscriptionResponse;
+  public boolean subscribe(Subscription subscription) {
+    webSocketDriver.connectToWebSocket(subscription, kafkaPublisher);
+    return webSocketDriver.isConnected();
   }
 
   public boolean unsubscribe() {
     webSocketDriver.disconnectFromWebSocket();
-    return webSocketDriver.isConnected();
-  }
-
-  public boolean unsubscribe(String uuid) {
-    SocketConfiguration.getInstance().deleteSubscription(uuid);
     return !webSocketDriver.isConnected();
   }
 }

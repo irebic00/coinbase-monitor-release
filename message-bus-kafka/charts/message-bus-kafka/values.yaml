@@ -15,6 +15,9 @@ global:
     zookeeper:
       hostname: zookeeper
       port: 2181
+    mongo:
+      hostname: mongo
+      port: 27017
 
 replicaCount: 1
 

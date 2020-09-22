@@ -1,7 +1,6 @@
 package com.lureb.websocket.controller;
 
 import com.lureb.monitor.coinbase.model.Subscription;
-import com.lureb.websocket.publisher.configurations.SubscriptionResponse;
 import com.lureb.websocket.services.SubscriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,10 @@ public class SubscriptionController {
     }
 
     @PostMapping("/subscription")
-    public ResponseEntity<SubscriptionResponse> subscription(
+    public ResponseEntity<Subscription> subscription(
             @RequestBody Subscription subscriptionRequest) throws URISyntaxException {
         log.info("Received {}", subscriptionRequest);
-        SubscriptionResponse subscriptionResponse = subscriptionService.subscribe(subscriptionRequest);
+        Subscription subscriptionResponse = subscriptionService.subscribe(subscriptionRequest);
         return ResponseEntity.created(new URI("/subscription/" + subscriptionResponse.getUuid()))
                 .body(subscriptionResponse);
     }
@@ -31,9 +30,6 @@ public class SubscriptionController {
     @DeleteMapping(value = "/subscription/{uuid}")
     public ResponseEntity<Void> unsubscribe(@PathVariable String uuid) {
         subscriptionService.unsubscribe(uuid);
-        if (subscriptionService.unsubscribe(uuid).getStatus().equals(SubscriptionResponse.Status.DELETED)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }

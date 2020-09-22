@@ -1,0 +1,5 @@
+{{- define "mongo.helm-labels" }}
+app.kubernetes.io/name: {{ template "mongo.name" . }}
+app.kubernetes.io/version: {{ template "mongo.version" . }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+{{- end}}
