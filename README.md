@@ -28,6 +28,10 @@ Follow these steps:
 ### Find NodePort:
 - minikube service -n istio-system istio-ingressgateway --url
 - kubectl get svc -n istio-system | grep ingressgateway 
+#### Other:
+- https://istio.io/latest/docs/setup/platform-setup/minikube/
+- minikube config set driver kvm2
+- minikube tunnel
 
 Last step should list NodePort address and Service of ingressgw. Use address whose NodePort corresponds with istio service on port 443
 

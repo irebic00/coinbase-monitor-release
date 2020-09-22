@@ -23,6 +23,8 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     private String bootstrapAddress;
+    
+    JsonSerializer jsonSerializer = new JsonSerializer();
 
     @Bean
     public ProducerFactory<String, TickerChannel> producerFactory() {

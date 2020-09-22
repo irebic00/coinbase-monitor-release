@@ -60,7 +60,11 @@ spec:
   http:
   - match:
       - uri:
-          prefix: /
+          exact: /main.js
+      - uri:
+          prefix: /webjars
+      - uri:
+          exact: /
       - uri:
           exact: /websocket/coinbase
     retries:
