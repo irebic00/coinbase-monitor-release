@@ -1,7 +1,7 @@
-package com.lureb.monitor.controller;
+package com.lureb.client.controller;
 
 import com.lureb.client.coinbase.model.TickerChannel;
-import com.lureb.monitor.consumer.KafkaConsumer;
+import com.lureb.client.consumer.KafkaConsumer;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ public class MainController {
     return "index";
   }
 
-  @GetMapping(path = "/sse/profiles", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  @GetMapping(path = "/websocket/coinbase", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Mono<TickerChannel> ticker() {
     return kafkaConsumer.consume();
   }

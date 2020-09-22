@@ -1,4 +1,4 @@
-package com.lureb.monitor.consumer;
+package com.lureb.client.consumer;
 
 import com.lureb.client.coinbase.model.TickerChannel;
 import reactor.core.publisher.Mono;

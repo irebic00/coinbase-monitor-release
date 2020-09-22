@@ -1,4 +1,4 @@
-package com.lureb.monitor;
+package com.lureb.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

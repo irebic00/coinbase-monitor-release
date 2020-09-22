@@ -30,6 +30,7 @@
         <jackson-databind-nullable.version>0.2.1</jackson-databind-nullable.version>
         <jsr305.version>3.0.2</jsr305.version>
 
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <openapi-generator-maven-plugin.version>4.3.1</openapi-generator-maven-plugin.version>
     </properties>
 
@@ -72,15 +73,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/io.projectreactor/reactor-core -->
-        <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor.kafka</groupId>
+            <artifactId>reactor-kafka</artifactId>
         </dependency>
 
         <dependency>
