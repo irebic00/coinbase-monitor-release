@@ -1,4 +1,4 @@
-package com.lureb.websocket.kafka.publisher;
+package com.lureb.monitor.kafka.publisher;
 
 import com.lureb.monitor.coinbase.model.TickerChannel;
 import lombok.Getter;

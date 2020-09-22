@@ -13,3 +13,6 @@ spec:
     - port: 27017
       name: mongo-client
       protocol: TCP
+    - port: 8081
+      name: mongo-express
+      protocol: TCP

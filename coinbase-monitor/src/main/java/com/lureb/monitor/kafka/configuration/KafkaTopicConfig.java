@@ -1,4 +1,4 @@
-package com.lureb.websocket.kafka.configuration;
+package com.lureb.monitor.kafka.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

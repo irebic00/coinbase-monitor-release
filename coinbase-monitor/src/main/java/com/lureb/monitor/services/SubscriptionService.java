@@ -1,4 +1,4 @@
-package com.lureb.websocket.services;
+package com.lureb.monitor.services;
 
 import com.lureb.monitor.coinbase.model.Subscription;
 

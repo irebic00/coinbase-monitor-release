@@ -1,10 +1,10 @@
-package com.lureb.websocket.driver;
+package com.lureb.monitor.driver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lureb.monitor.coinbase.model.Subscription;
 import com.lureb.monitor.coinbase.model.TickerChannel;
-import com.lureb.websocket.kafka.publisher.KafkaPublisher;
+import com.lureb.monitor.kafka.publisher.KafkaPublisher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;

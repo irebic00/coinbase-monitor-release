@@ -63,6 +63,8 @@ updateStrategy:
 
 coinbaseSocket: wss://ws-feed.pro.coinbase.com
 mongo:
-  databaseName: test
+  databaseName: coinbase
+  username: root
+  password: password
 
 nameOverride:

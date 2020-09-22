@@ -1,4 +1,4 @@
-package com.lureb.websocket.socket.configurations;
+package com.lureb.monitor.socket.configurations;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,11 +1,11 @@
-package com.lureb.websocket.socket;
+package com.lureb.monitor.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lureb.monitor.coinbase.model.Subscription;
 import com.lureb.monitor.coinbase.model.TickerChannel;
-import com.lureb.websocket.driver.WebSocketDriver;
-import com.lureb.websocket.kafka.publisher.KafkaPublisher;
-import com.lureb.websocket.socket.configurations.WsSourceUri;
+import com.lureb.monitor.driver.WebSocketDriver;
+import com.lureb.monitor.kafka.publisher.KafkaPublisher;
+import com.lureb.monitor.socket.configurations.WsSourceUri;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;

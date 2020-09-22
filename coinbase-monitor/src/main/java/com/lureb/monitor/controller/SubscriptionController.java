@@ -1,7 +1,7 @@
-package com.lureb.websocket.controller;
+package com.lureb.monitor.controller;
 
 import com.lureb.monitor.coinbase.model.Subscription;
-import com.lureb.websocket.services.SubscriptionService;
+import com.lureb.monitor.services.SubscriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

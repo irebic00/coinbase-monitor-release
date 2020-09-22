@@ -1,13 +1,13 @@
-package com.lureb.websocket.services;
+package com.lureb.monitor.services;
 
 import com.lureb.monitor.coinbase.model.Subscription;
-import com.lureb.websocket.converter.ModelConverter;
-import com.lureb.websocket.exceptions.AlreadyReported;
-import com.lureb.websocket.exceptions.BadRequest;
-import com.lureb.websocket.exceptions.NotFoundException;
-import com.lureb.websocket.model.SubscriptionMongo;
-import com.lureb.websocket.repository.SubscriptionRepository;
-import com.lureb.websocket.socket.SocketHandler;
+import com.lureb.monitor.converter.ModelConverter;
+import com.lureb.monitor.exceptions.AlreadyReported;
+import com.lureb.monitor.exceptions.BadRequest;
+import com.lureb.monitor.exceptions.NotFoundException;
+import com.lureb.monitor.model.SubscriptionData;
+import com.lureb.monitor.repository.SubscriptionRepository;
+import com.lureb.monitor.socket.SocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
@@ -41,18 +41,19 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (sha256hex == null) {
             throw new BadRequest("Subscription cannot be created for " + subscription);
         }
-        Optional<SubscriptionMongo> subscriptionSaved = subscriptionRepository.findById(sha256hex);
+        Optional<SubscriptionData> subscriptionSaved = subscriptionRepository.findById(sha256hex);
 
         if (subscriptionSaved.isPresent()) {
             throw new AlreadyReported("Subscription already exists");
         }
 
         try {
-            SubscriptionMongo subscriptionMongo = modelConverter.convertValue(subscription, SubscriptionMongo.class);
-            if (socketHandler.subscribe(subscription)) {
-                subscriptionRepository.save(subscriptionMongo);
-            }
-            return modelConverter.convertValue(subscriptionMongo, Subscription.class);
+            SubscriptionData subscriptionData = modelConverter.convertValue(subscription, SubscriptionData.class);
+            subscriptionData.setUuid(sha256hex);
+            subscriptionRepository.save(subscriptionData);
+            log.info("Saved subscription {}", sha256hex);
+            socketHandler.subscribe(subscription);
+            return modelConverter.convertValue(subscriptionData, Subscription.class);
         } catch (IllegalArgumentException exception) {
             throw new BadRequest("Request is not valid: " + exception.getMessage());
         }
@@ -60,7 +61,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription unsubscribe(String sha256hex) {
-        Optional<SubscriptionMongo> subscriptionMongo = subscriptionRepository.findById(sha256hex);
+        Optional<SubscriptionData> subscriptionMongo = subscriptionRepository.findById(sha256hex);
         if (subscriptionMongo.isEmpty()) {
             throw new NotFoundException("Requested subscription not found (" + sha256hex + ")");
         }

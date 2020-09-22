@@ -12,11 +12,19 @@ data:
       banner-mode: "off"
       jpa:
         show-sql: true
+        properties:
+          hibernate:
+            ogm:
+              datastore:
+                create_database: true
       data:
         mongodb:
           database: {{ .Values.mongo.databaseName }}
           host: {{ .Values.global.services.mongo.hostname }}
           port: {{ .Values.global.services.mongo.port }}
+          username: {{ .Values.mongo.username }}
+          password: {{ .Values.mongo.password }}
+          authentication-database: admin
     server:
       port : {{ .Values.service.internalPort }}
     management:

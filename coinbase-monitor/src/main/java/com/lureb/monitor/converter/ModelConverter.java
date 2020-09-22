@@ -1,4 +1,4 @@
-package com.lureb.websocket.converter;
+package com.lureb.monitor.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
