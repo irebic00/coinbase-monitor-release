@@ -61,12 +61,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription unsubscribe(String sha256hex) {
-        Optional<SubscriptionData> subscriptionMongo = subscriptionRepository.findById(sha256hex);
-        if (subscriptionMongo.isEmpty()) {
+        Optional<SubscriptionData> subscriptionData = subscriptionRepository.findById(sha256hex);
+        if (subscriptionData.isEmpty()) {
             throw new NotFoundException("Requested subscription not found (" + sha256hex + ")");
         }
+        subscriptionRepository.delete(subscriptionData.get());
         socketHandler.unsubscribe();
-        return modelConverter.convertValue(subscriptionMongo.get(), Subscription.class);
+        return modelConverter.convertValue(subscriptionData.get(), Subscription.class);
     }
 
     private String calculateSHA256(Subscription subscription) {

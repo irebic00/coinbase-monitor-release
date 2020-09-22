@@ -11,7 +11,7 @@ global:
 
 replicaCount: 1
 images:
-  coinbaseMonitor:
+  coinbaseClient:
     name: coinbase-client
     tag: %SERVICE_VERSION%
 

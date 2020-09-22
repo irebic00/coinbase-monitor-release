@@ -1,4 +1,4 @@
 apiVersion: v1
-description: Coinbase Monitor microservice
+description: Coinbase Client microservice
 name: coinbase-client
 version: %SERVICE_VERSION%

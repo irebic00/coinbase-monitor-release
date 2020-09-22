@@ -24,4 +24,4 @@ COPY --from=builder /usr/src/app/monitor-${VERSION_ENV}.jar .
 RUN groupadd -r func_user && useradd -r -s /bin/false -g func_user func_user
 
 USER func_user
-CMD ["sh", "-c", "java ${JAVA_OPTS} -jar monitor-${VERSION_ENV}.jar"]
+CMD ["sh", "-c", "java ${JAVA_OPTS} -jar coinbase-monitor-${VERSION_ENV}.jar"]

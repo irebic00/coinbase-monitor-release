@@ -53,7 +53,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: {{ template "coinbase-client.name" . }}
-          image: "{{ default .Values.global.registry.url .Values.imageCredentials.registry.url }}/{{ .Values.imageCredentials.repoPath }}/{{ .Values.images.coinbaseMonitor.name }}:{{ .Values.images.coinbaseMonitor.tag }}"
+          image: "{{ default .Values.global.registry.url .Values.imageCredentials.registry.url }}/{{ .Values.imageCredentials.repoPath }}/{{ .Values.images.coinbaseClient.name }}:{{ .Values.images.coinbaseClient.tag }}"
           env:
             - name: CONTAINER_IP
               valueFrom:

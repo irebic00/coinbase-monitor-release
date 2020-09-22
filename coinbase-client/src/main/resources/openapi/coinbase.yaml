@@ -1,0 +1,144 @@
+openapi: "3.0.2"
+info:
+  version: 1.0.0
+  title: CoinbaseMonitor DAL
+  license:
+    name: MIT
+servers: []
+paths: {}
+components:
+  schemas:
+    Subscription:
+      required:
+        - type
+        - product_ids
+        - channels
+      properties:
+        uuid:
+          type: string
+        type:
+          $ref: "#/components/local/SubscriptionType"
+          example: "subscribe"
+        product_ids:
+          type: array
+          items:
+            default: []
+            $ref: "#/components/local/ProductIds"
+          example: "[ \"ETH-USD\", \"ETH-EUR\" ]"
+        channels:
+          type: array
+          items:
+            default: []
+            $ref: "#/components/local/ChannelType"
+          example: "[ \"level2\", \"ticker\" ]"
+
+    SubscriptionResponse:
+      properties:
+        type:
+          $ref: "#/components/local/SubscriptionType"
+          example: "subscriptions"
+        channels:
+          type: array
+          items:
+            default: []
+            $ref: "#/components/local/ExtendedChannelType"
+          example: "[{\"name\":\"ticker\",\"product_ids\":[\"BTC-EUR\"]}]}"
+
+    TickerChannel:
+      properties:
+        type:
+          $ref: "#/components/local/ChannelType"
+          example: "ticker"
+        sequence:
+          $ref: "#/components/local/IntegerNumber"
+          example: 6844729408
+        product_id:
+          $ref: "#/components/local/ProductIds"
+          example: "BTC-EUR"
+        price:
+          $ref: "#/components/local/DoubleNumber"
+          example: "9334.23"
+        open_24h:
+          $ref: "#/components/local/DoubleNumber"
+          example: "8950.70000000"
+        volume_24h:
+          $ref: "#/components/local/DoubleNumber"
+          example: "2358.58065148"
+        low_24h:
+          $ref: "#/components/local/DoubleNumber"
+          example: "8900.97000000"
+        high_24h:
+          $ref: "#/components/local/DoubleNumber"
+          example: "9338.68000000"
+        volume_30d:
+          $ref: "#/components/local/DoubleNumber"
+          example: "46522.28566752"
+        best_bid:
+          $ref: "#/components/local/DoubleNumber"
+          example: "9320.65"
+        best_ask:
+          $ref: "#/components/local/DoubleNumber"
+          example: "9334.23"
+        side:
+          $ref: "#/components/local/Side"
+          example: "buy"
+        time:
+          $ref: "#/components/local/Timestamp"
+          example: "2020-02-18T19:49:51.296205Z"
+        trade_id:
+          $ref: "#/components/local/IntegerNumber"
+          example: 24203437
+        last_size:
+          $ref: "#/components/local/DoubleNumber"
+          example: "0.01608684"
+
+    SubscriptionType:
+      type: string
+      enum:
+        - subscribe
+        - unsubscribe
+        - subscriptions
+
+    Side:
+      type: string
+      enum:
+        - buy
+        - sell
+
+    ChannelType:
+      type: string
+      enum:
+        - level2
+        - heartbeat
+        - ticker
+
+    ExtendedChannelType:
+      properties:
+        name:
+          $ref: "#/components/local/ChannelType"
+          example: "ticker"
+        product_ids:
+          type: array
+          items:
+            default: []
+            $ref: "#/components/local/ProductIds"
+          example: "[ \"ETH-USD\", \"ETH-EUR\" ]"
+
+    ProductIds:
+      type: string
+      enum:
+        - BTC-EUR
+        - BTC-USD
+
+    DoubleNumber:
+      type: number
+      format: double
+      example: "0.46"
+
+    IntegerNumber:
+      type: number
+      example: "1"
+
+    Timestamp:
+      type: string
+      format: date
