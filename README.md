@@ -12,7 +12,6 @@ Prerequisites for running this project:
 - Minikube with [kvm2 driver](https://minikube.sigs.k8s.io/docs/drivers/kvm2/)
 - Maven
 - Java 11
-- Istio (istioctl tool)
 
 ## Getting Started
 #### zookeeper
