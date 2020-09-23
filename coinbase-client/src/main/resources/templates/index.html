@@ -52,22 +52,6 @@
                 </button>
             </div>
 
-            <div class="tab-pane fade" id="refresh" role="tabpanel" aria-labelledby="refresh-tab" style="height: 128px;">
-                <p>Select refresh interval here for your ticker.</p>
-                <div class="form-group">
-                    <label for="refresh-interval-select">Refresh interval in seconds:</label>
-                    <select class="form-control" id="refresh-interval-select">
-                        <option>1</option>
-                        <option>5</option>
-                        <option>10</option>
-                        <option>15</option>
-                        <option>30</option>
-                        <option>45</option>
-                        <option>60</option>
-                    </select>
-                </div>
-            </div>
-
             <div class="tab-pane fade" id="ticker" role="tabpanel" aria-labelledby="ticker-tab" style="height: 128px;">
                 <p>Select one of the tickers to follow.</p>
                 <div class="form-group">
@@ -104,9 +88,6 @@
     <ul class="list-group list-group-horizontal">
         <li class="list-group-item">Connection:
             <span class="badge badge-danger" id="connection-status">Disconnected</span>
-        </li>
-        <li class="list-group-item">Refresh:
-            <span class="badge badge-info" id="refresh-interval">10s</span>
         </li>
         <li class="list-group-item">Ticker:
             <span class="badge badge-info" id="ticker-selected">BTC-EUR</span>

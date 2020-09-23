@@ -1,4 +1,5 @@
 var socket = null;
+var stompClient = null;
 var previousPrice = -1;
 var subscriptionId;
 
@@ -37,28 +38,25 @@ function configureServer() {
     }));
 }
 
+function connectCallback(frame) {
+    console.log("connected!!!");
+    setConnected(true);
+    stompClient.subscribe('/topic/coinbase', messageReceivedCallback);
+}
+
+function messageReceivedCallback(message) {
+    console.log("[message] Data received from server: " + message.body);
+    showUpdate(message.body);
+}
+
 function connect() {
 
-    configureServer()
+    configureServer();
 
     socket = new SockJS('/websocket');
+    console.log("instantiate!!!")
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-      stompClient.subscribe('/topic/coinbase', function (message) {
-          console.log("[message] Data received from server: " + message.body);
-          showUpdate(message.body)
-       });
-    });
-
-    socket.onopen = function(e) {
-        setConnected(true);
-        console.log("[open] Connection established");
-    };
-
-    socket.onmessage = function(event) {
-        console.log("[message] Data received from server: " + event.data);
-        showUpdate(event.data)
-    };
+    stompClient.connect({}, connectCallback);
 
     socket.onclose = function(event) {
         if (event.wasClean) {
@@ -106,14 +104,6 @@ function showUpdate(jsonMessage) {
     row.cells[1].innerHTML = timestamp;
 }
 
-function updateInterval() {
-    var refreshInterval = $( "#refresh-interval-select" )[0].value;
-    var span = document.getElementById('refresh-interval');
-
-    span.innerText = span.textContent = refreshInterval + "s";
-    console.log("New refresh interval: " + refreshInterval);
-}
-
 function updateTicker() {
     var selectedTicker = $( "#ticker-select" )[0].value;
     var span = document.getElementById('ticker-selected');
@@ -124,7 +114,7 @@ function updateTicker() {
     var table = document.getElementById("ticker-table").getElementsByTagName('tbody')[0];
 
     var row;
-    if (table.rows.length == 0){
+    if (table.rows.length === 0){
         row = table.insertRow(0);
         row.insertCell(0);
         row.insertCell(1);
@@ -137,12 +127,10 @@ function updateTicker() {
 }
 
 $(function () {
-    updateInterval();
     updateTicker();
     setConnected(false);
 
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#refresh-interval-select" ).on('change',function(){ updateInterval(); });
     $( "#ticker-select" ).on('change',function(){ updateTicker(); });
 });
