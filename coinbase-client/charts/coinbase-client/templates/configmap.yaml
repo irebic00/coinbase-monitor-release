@@ -9,6 +9,11 @@ metadata:
 data:
   application.yaml: |-
     spring:
+      cloud:
+        stream:
+          kafka:
+            binder:
+              brokers: {{ .Values.global.services.kafka.hostname }}:{{ .Values.global.services.kafka.port }}
       banner-mode: "off"
     server:
       port : {{ .Values.service.internalPort }}
@@ -22,10 +27,6 @@ data:
         health:
           probes:
             enabled: true
-    kafka:
-      bootstrapAddress: {{ .Values.global.services.kafka.hostname }}:{{ .Values.global.services.kafka.port }}
-      groupId: {{ .Values.kafka.groupId }}
-      inTopicName: {{ .Values.kafka.inTopicName }}
   jvm.java_opts: "-Xmx{{ .Values.jvm.maxheapmemory }} -Xms{{ .Values.jvm.startheapmemory }} -Dlogging.config=/etc/config/log4j.xml -Dspring.config.location=/etc/config/application.yaml"
   log4j.xml: |-
     <?xml version="1.0" encoding="UTF-8"?>

@@ -41,7 +41,14 @@ function connect() {
 
     configureServer()
 
-    socket = new WebSocket("wss://" + location.host + "/websocket/coinbase");
+    socket = new SockJS('/websocket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+      stompClient.subscribe('/topic/coinbase', function (message) {
+          console.log("[message] Data received from server: " + message.body);
+          showUpdate(message.body)
+       });
+    });
 
     socket.onopen = function(e) {
         setConnected(true);
