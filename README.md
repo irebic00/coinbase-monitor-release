@@ -10,6 +10,7 @@ Prerequisites for running this project:
 - Docker
 - Helm 3
 - Minikube with [kvm2 driver](https://minikube.sigs.k8s.io/docs/drivers/kvm2/)
+- Kubectl [bin](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - Maven
 - Java 11
 
