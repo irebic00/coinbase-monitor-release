@@ -3,7 +3,7 @@
 coinbase-monitor is web application designed to monitor price fluctuations from Coinbase Pro service
 
 
-![Drag Racing](coinbase-release.jpg)
+![Simple Flow Chart](coinbase-release.jpg)
 
 ## Requirements
 Prerequisites for running this project:
