@@ -1,16 +1,12 @@
 package com.lureb.client.configuration;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lureb.client.coinbase.model.TickerChannel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +15,6 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
-import reactor.kafka.receiver.ReceiverRecord;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,7 +55,7 @@ public class ReactiveKafkaConsumerConfig {
     }
 
     @Bean
-    Flux<ReceiverRecord<String, TickerChannel>> reactiveKafkaReceiver(ReceiverOptions<String, TickerChannel> kafkaReceiverOptions) {
-        return KafkaReceiver.create(kafkaReceiverOptions).receive();
+    Flux<TickerChannel> reactiveKafkaReceiver(ReceiverOptions<String, TickerChannel> kafkaReceiverOptions) {
+        return KafkaReceiver.create(kafkaReceiverOptions).receive().map(ConsumerRecord::value);
     }
 }
