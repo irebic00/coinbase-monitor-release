@@ -66,7 +66,7 @@ spec:
       - uri:
           exact: /
       - uri:
-          exact: /websocket/coinbase
+          prefix: /websocket
     retries:
       attempts: 0
     route:
